@@ -1,0 +1,10 @@
+{
+    "geopackage": "mygeopackage.gpkg",
+    "angle_mode": "radians",
+    "layers": {
+        "country": {
+            "table": "table_countries",
+            "field_name": "code"
+        }
+    }
+}

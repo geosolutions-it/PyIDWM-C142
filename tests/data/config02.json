@@ -1,0 +1,10 @@
+{
+    "angle_mode": "radians",
+    "distance_mode": "meters",
+    "layers": {
+        "country": {
+            "table": "table_countries",
+            "field_name": "code"
+        }
+    }
+}

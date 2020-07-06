@@ -1,0 +1,5 @@
+{
+    "geopackage": "mygeopackage.gpkg",
+    "angle_mode": "radians",
+    "distance_mode": "meters"
+}
