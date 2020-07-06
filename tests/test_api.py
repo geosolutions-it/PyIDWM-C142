@@ -3,7 +3,7 @@ from unittest import TestCase
 from pyidwm.Config import Config
 from pyidwm.Api import Api
 from pyidwm.Units import Angle, Distance, SpatialOperator
-from pyidwm.Value import AngleValue
+from pyidwm.Value import AngleValue, DistanceValue
 
 
 class ApiTest(TestCase):
@@ -75,4 +75,33 @@ class ApiTest(TestCase):
         result = self.geoplc(0.454885162947282, 0.670154072888263, Angle.RADIANS)
         self.assertEqual(result, "GRC")
 
+    def geoalc(self, lon, lat, max_dist_value, azimuth, angle_mode=None, iwc=0, max_cros=100, arc_approximation=20):
+        config = Config()
+        config.angle_mode = Angle.DEGREES
+        config.geopackage = __file__ + "/../data/idwm.gpkg"
+        api = Api()
+        return api.geoalc(
+            AngleValue(lon, angle_mode),
+            AngleValue(lat, angle_mode),
+            max_dist_value,
+            azimuth,
+            iwc, max_cros, arc_approximation)
 
+    def test_geoalc_completely_in_sea(self):
+        result = self.geoalc(11.07079, 41.19145, DistanceValue(100, Distance.KILOMETERS), 45.0, Angle.DEGREES)
+        self.assertEqual(len(result), 1)
+        self.assertIsNone(result[0]["name"])
+
+    def test_geoalc_sea_italy(self):
+        result = self.geoalc(11.07079, 41.19145, DistanceValue(200, Distance.KILOMETERS), 45.0, Angle.DEGREES)
+        self.assertEqual(len(result), 2)
+        self.assertIsNone(result[0]["name"])
+        self.assertEqual(result[1]["name"], "I")
+
+    """
+    def test_geoalc_sea_sardinia_italy(self):
+        result = self.geoalc(7.28857, 39.08092, DistanceValue(600, Distance.KILOMETERS), 45.0, Angle.DEGREES)
+        self.assertEqual(len(result), 2)
+        self.assertIsNone(result[0]["name"])
+        self.assertEqual(result[1]["name"], "I")
+    """

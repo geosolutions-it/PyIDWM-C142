@@ -7,6 +7,7 @@ from pyproj import Proj
 from ..Singleton import Singleton
 from ..Config import Config
 from ..Units import Angle, Distance, SpatialOperator
+from ..Value import AngleValue, DistanceValue
 from .Projection import Projection, WGS84_PROJECTION
 
 
@@ -133,3 +134,18 @@ class Geometry:
             distances.append((i + 1) * step)
         distances.append(distance)
         return distances
+
+    @staticmethod
+    def get_distance(projection, lon_value, lat_value):
+        """
+        Return the distance of a given point from the origin of the given projection
+        :param projection: custom aeqd projection
+        :param lon_value: longitude value of the point
+        :param lat_value: latitude value of the point
+        :return:
+        """
+        lon = Angle.CONVERT(lon_value.getValue(), lon_value.getUnit(), Angle.DEGREES)
+        lat = Angle.CONVERT(lon_value.getValue(), lon_value.getUnit(), Angle.DEGREES)
+        x, y = projection(lon, lat)
+        distance = math.sqrt(x*x + y*y)
+        return DistanceValue(distance, Distance.METERS)
