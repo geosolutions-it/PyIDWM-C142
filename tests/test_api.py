@@ -3,6 +3,7 @@ from unittest import TestCase
 from pyidwm.Config import Config
 from pyidwm.Api import Api
 from pyidwm.Units import Angle, Distance, SpatialOperator
+from pyidwm.Value import AngleValue
 
 
 class ApiTest(TestCase):
@@ -12,7 +13,7 @@ class ApiTest(TestCase):
         config.angle_mode = Angle.DEGREES
         config.geopackage = __file__ + "/../data/idwm.gpkg"
         api = Api()
-        return api.geoplc(lon, lat, angle_mode)
+        return api.geoplc(AngleValue(lon, angle_mode), AngleValue(lat, angle_mode))
 
     def test_geoplc_water(self):
         result = self.geoplc(11.735, 39.844)
