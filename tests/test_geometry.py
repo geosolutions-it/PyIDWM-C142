@@ -92,3 +92,13 @@ class GeometryTest(TestCase):
                                     "12.5570342682142 45.9170505123658 0,"
                                     "12.7875099444211 46.0748873137703 0,"
                                     "13.0193058218881 46.2322582356215 0)")
+
+    def test_get_progressive_distances(self):
+        distance = 100
+        distances = Geometry.get_progressive_distances(distance, 5)
+        self.assertEqual(5, len(distances))
+        self.assertEqual(20, distances[0])
+        self.assertEqual(40, distances[1])
+        self.assertEqual(60, distances[2])
+        self.assertEqual(80, distances[3])
+        self.assertEqual(100, distances[4])
