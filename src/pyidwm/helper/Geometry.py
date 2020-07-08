@@ -145,7 +145,7 @@ class Geometry:
         :return:
         """
         lon = Angle.CONVERT(lon_value.getValue(), lon_value.getUnit(), Angle.DEGREES)
-        lat = Angle.CONVERT(lon_value.getValue(), lon_value.getUnit(), Angle.DEGREES)
+        lat = Angle.CONVERT(lat_value.getValue(), lat_value.getUnit(), Angle.DEGREES)
         x, y = projection(lon, lat)
         distance = math.sqrt(x*x + y*y)
         return DistanceValue(distance, Distance.METERS)

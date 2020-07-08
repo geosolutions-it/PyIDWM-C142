@@ -42,10 +42,12 @@ class Api:
         array = []
         geom_count = geometry.GetGeometryCount()
         if geom_count == 0:
+            #if geometry.GetGeometryType() == ogr.wkbLineString:
             array.append(geometry)
         else:
             for i in range(geom_count):
-                part = geometry.getGeometry(i)
+                part = geometry.GetGeometryRef(i)
+                #if part.GetGeometryType() == ogr.wkbLineString:
                 array.append(part)
         return array
 
@@ -71,7 +73,6 @@ class Api:
         aeqd = Projection.get_aeqd_proj(lon_value.getValue(), lat_value.getValue(), lon_value.getUnit())
         line = Geometry.create_great_circular_arc_from_point_azimuth_distance(
             lon_value, lat_value, azimuth, max_dist_value, arc_approximation)
-        print(str(line))
         layer = self.__store.get_layer(self.__config.layers["country"]["table"])
         field_name = self.__config.layers["country"]["field_name"]
         layer.SetSpatialFilter(line)
@@ -104,6 +105,6 @@ class Api:
             distance = Geometry.get_distance(aeqd, lon_value, lat_value)
             parts.append({"name": None, "point": [lon_value, lat_value], "distance": distance})
 
-        parts.sort(key=lambda x: x["distance"].getValue(), reverse=True)
+        parts.sort(key=lambda x: x["distance"].getValue(), reverse=False)
 
         return parts
