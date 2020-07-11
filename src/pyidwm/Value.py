@@ -1,4 +1,5 @@
 from .Config import Config
+from .Units import Distance
 
 
 class Value:
@@ -21,6 +22,14 @@ class DistanceValue(Value):
         if unit is None:
             unit = Config().distance_mode
         Value.__init__(self, value, unit)
+
+    def __sub__(self, other):
+        value = self.getValue()
+        if self.getUnit() == other.getUnit():
+            value -= other.getValue()
+        else:
+            value -= Distance.CONVERT(other.getValue(), other.getUnit, self.getUnit())
+        return DistanceValue(value, self.getUnit())
 # ---------------------------------------------------------------------------------------------
 
 

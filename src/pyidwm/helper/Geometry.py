@@ -42,17 +42,19 @@ class Geometry:
         aeqd_projection = Projection.get_aeqd_proj(lon, lat, Angle.DEGREES)
         line = ogr.Geometry(ogr.wkbLinearRing)
         step_radians = 2 * math.pi / num_vertices
-        first_lat, first_lon = None, None
+        array_x, array_y = [], []
         for i in range(num_vertices):
             angle_radians = i * step_radians
             x = radius * math.sin(angle_radians)
             y = radius * math.cos(angle_radians)
-            point = pyproj.transform(aeqd_projection, WGS84_PROJECTION, x, y)
-            new_lat, new_lon = point
-            if i == 0:
-                first_lat, first_lon = new_lat, new_lon
+            array_x.append(x)
+            array_y.append(y)
+        points = pyproj.transform(aeqd_projection, WGS84_PROJECTION, array_x[:], array_y[:])
+        for i in range(len(points[0])):
+            new_lat, new_lon = points[0][i], points[1][i]
             line.AddPoint(new_lon, new_lat)
-        line.AddPoint(first_lon, first_lat)
+        new_lat, new_lon = points[0][0], points[1][0]
+        line.AddPoint(new_lon, new_lat)
         polygon = ogr.Geometry(ogr.wkbPolygon)
         polygon.AddGeometry(line)
         return polygon
@@ -71,10 +73,14 @@ class Geometry:
         dx = e_x / segments_count
         dy = e_y / segments_count
         line = ogr.Geometry(ogr.wkbLineString)
+        array_x, array_y = [], []
         for i in range(segments_count + 1):
             x, y = i * dx, i * dy
-            point = pyproj.transform(projection, WGS84_PROJECTION, x, y)
-            new_lat, new_lon = point
+            array_x.append(x)
+            array_y.append(y)
+        points = pyproj.transform(projection, WGS84_PROJECTION, array_x[:], array_y[:])
+        for i in range(len(points[0])):
+            new_lat, new_lon = points[0][i], points[1][i]
             line.AddPoint(new_lon, new_lat)
         return line
 
@@ -136,16 +142,17 @@ class Geometry:
         return distances
 
     @staticmethod
-    def get_distance(projection, lon_value, lat_value):
+    def get_distance(projection, lon_value, lat_value, unit=Distance.METERS):
         """
         Return the distance of a given point from the origin of the given projection
         :param projection: custom aeqd projection
         :param lon_value: longitude value of the point
         :param lat_value: latitude value of the point
+        :param unit: unit of measure for the distance
         :return:
         """
         lon = Angle.CONVERT(lon_value.getValue(), lon_value.getUnit(), Angle.DEGREES)
         lat = Angle.CONVERT(lat_value.getValue(), lat_value.getUnit(), Angle.DEGREES)
         x, y = projection(lon, lat)
-        distance = math.sqrt(x*x + y*y)
-        return DistanceValue(distance, Distance.METERS)
+        distance = Distance.CONVERT(math.sqrt(x*x + y*y), Distance.METERS, unit)
+        return DistanceValue(distance, unit)

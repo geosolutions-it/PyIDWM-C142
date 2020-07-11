@@ -70,6 +70,7 @@ class Api:
         :param arc_approximation: number of vertices to approximate the arc with a linestring geometry (default 20)
         :return:
         """
+        dist_unit = max_dist_value.getUnit()
         aeqd = Projection.get_aeqd_proj(lon_value.getValue(), lat_value.getValue(), lon_value.getUnit())
         line = Geometry.create_great_circular_arc_from_point_azimuth_distance(
             lon_value, lat_value, azimuth, max_dist_value, arc_approximation)
@@ -88,10 +89,16 @@ class Api:
             lines = self.toArraySingle(intersection)
             for i in range(len(lines)):
                 first_point = lines[i].GetPoint(0)
-                lon_value = AngleValue(first_point[0], Angle.DEGREES)
-                lat_value = AngleValue(first_point[1], Angle.DEGREES)
-                distance = Geometry.get_distance(aeqd, lon_value, lat_value)
-                parts.append({"name": name, "point": [lon_value, lat_value], "distance": distance})
+                last_point = lines[i].GetPoint(lines[i].GetPointCount() - 1)
+                f_lon_value = AngleValue(first_point[0], Angle.DEGREES)
+                f_lat_value = AngleValue(first_point[1], Angle.DEGREES)
+                l_lon_value = AngleValue(last_point[0], Angle.DEGREES)
+                l_lat_value = AngleValue(last_point[1], Angle.DEGREES)
+                distance_f = Geometry.get_distance(aeqd, f_lon_value, f_lat_value, dist_unit)
+                distance_l = Geometry.get_distance(aeqd, l_lon_value, l_lat_value, dist_unit)
+                distance_p = distance_l - distance_f
+                parts.append({"name": name, "point": [l_lon_value, l_lat_value],
+                              "total_distance": distance_l, "partial_distance": distance_p})
                 cont += 1
                 if cont == max_cros:
                     break
@@ -100,11 +107,16 @@ class Api:
         lines = self.toArraySingle(line)
         for i in range(len(lines)):
             first_point = lines[i].GetPoint(0)
-            lon_value = AngleValue(first_point[0], Angle.DEGREES)
-            lat_value = AngleValue(first_point[1], Angle.DEGREES)
-            distance = Geometry.get_distance(aeqd, lon_value, lat_value)
-            parts.append({"name": None, "point": [lon_value, lat_value], "distance": distance})
+            last_point = lines[i].GetPoint(lines[i].GetPointCount()-1)
+            f_lon_value = AngleValue(first_point[0], Angle.DEGREES)
+            f_lat_value = AngleValue(first_point[1], Angle.DEGREES)
+            l_lon_value = AngleValue(last_point[0], Angle.DEGREES)
+            l_lat_value = AngleValue(last_point[1], Angle.DEGREES)
+            distance_f = Geometry.get_distance(aeqd, f_lon_value, f_lat_value, dist_unit)
+            distance_l = Geometry.get_distance(aeqd, l_lon_value, l_lat_value, dist_unit)
+            distance_p = distance_l - distance_f
+            parts.append({"name": None, "point": [l_lon_value, l_lat_value],
+                          "total_distance": distance_l, "partial_distance": distance_p})
 
-        parts.sort(key=lambda x: x["distance"].getValue(), reverse=False)
-
-        return parts
+        parts.sort(key=lambda x: x["total_distance"].getValue(), reverse=False)
+        return parts[0:max_cros]
