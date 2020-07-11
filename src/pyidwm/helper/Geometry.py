@@ -112,7 +112,7 @@ class Geometry:
         :param s_lon_value: longitude of the starting point
         :param s_lat_value: latitude of the starting point
         :param azimuth: direction of the path in degrees
-            (0 is toward north, 90 is toward east, 180 is toward south, 270 is toward west)
+        (0 is toward north, 90 is toward east, 180 is toward south, 270 is toward west)
         :param distance_value: maximum distance to reach
         :param num_points: number of vertices for the output linestring (default is 20)
         :return:

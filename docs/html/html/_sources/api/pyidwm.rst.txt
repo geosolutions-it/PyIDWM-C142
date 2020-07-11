@@ -1,0 +1,62 @@
+pyidwm package
+==============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyidwm.helper
+
+Submodules
+----------
+
+pyidwm.Api module
+-----------------
+
+.. automodule:: pyidwm.Api
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyidwm.Config module
+--------------------
+
+.. automodule:: pyidwm.Config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyidwm.Singleton module
+-----------------------
+
+.. automodule:: pyidwm.Singleton
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyidwm.Units module
+-------------------
+
+.. automodule:: pyidwm.Units
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyidwm.Value module
+-------------------
+
+.. automodule:: pyidwm.Value
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pyidwm
+   :members:
+   :undoc-members:
+   :show-inheritance:

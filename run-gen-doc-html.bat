@@ -1,0 +1,1 @@
+run-sphinx.bat html

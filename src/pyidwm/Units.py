@@ -8,8 +8,12 @@ class Angle(Enum):
     """
     Enum for angle units
     """
+
     RADIANS = 0
+    """ Angle in radians """
+
     DEGREES = 1
+    """ Angle in degrees """
 
     @staticmethod
     def CONVERT(angle, from_unit=RADIANS, to_unit=DEGREES):

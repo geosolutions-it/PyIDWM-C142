@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pyidwm.helper package &#8212; PyIDWM unknown documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="pyidwm package" href="pyidwm.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyidwm.html" title="pyidwm package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyIDWM unknown documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyidwm</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyidwm.html" accesskey="U">pyidwm package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyidwm.helper package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyidwm-helper-package">
+<h1>pyidwm.helper package<a class="headerlink" href="#pyidwm-helper-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyidwm.helper.Geometry">
+<span id="pyidwm-helper-geometry-module"></span><h2>pyidwm.helper.Geometry module<a class="headerlink" href="#module-pyidwm.helper.Geometry" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyidwm.helper.Geometry.Geometry">
+<em class="property">class </em><code class="sig-prename descclassname">pyidwm.helper.Geometry.</code><code class="sig-name descname">Geometry</code><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="pyidwm.helper.Geometry.Geometry.create_buffer">
+<em class="property">static </em><code class="sig-name descname">create_buffer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lonValue</span></em>, <em class="sig-param"><span class="n">latValue</span></em>, <em class="sig-param"><span class="n">radiusValue</span></em>, <em class="sig-param"><span class="n">num_vertices</span><span class="o">=</span><span class="default_value">8</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry.create_buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry.create_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a circle (approximate by a polygon) from center and radius in WGS84
+:param lonValue: {CoordinateValue} longitude of the center of the circle
+:param latValue: {CoordinateValue} latitude of the center of the circle
+:param radius: {DistanceValue} radius of the circle
+:param num_vertices: number of vertices to approximate the circle with a polygon
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.helper.Geometry.Geometry.create_great_circular_arc">
+<em class="property">static </em><code class="sig-name descname">create_great_circular_arc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projection</span></em>, <em class="sig-param"><span class="n">e_x</span></em>, <em class="sig-param"><span class="n">e_y</span></em>, <em class="sig-param"><span class="n">num_points</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry.create_great_circular_arc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry.create_great_circular_arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the great circular arc (WGS84) using the provided aeqd projection (from the starting point) and the ending point
+:param projection: aeqd projection starting from the first point (lon,lat) =&gt; (0,0)
+:param e_x: x coordinate of the final point in the aeqd projection
+:param e_y: y coordinate of the final point in the aeqd projection
+:param num_points: number of vertices for the output linestring (default is 20)
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.helper.Geometry.Geometry.create_great_circular_arc_from_2_points">
+<em class="property">static </em><code class="sig-name descname">create_great_circular_arc_from_2_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s_lon_value</span></em>, <em class="sig-param"><span class="n">s_lat_value</span></em>, <em class="sig-param"><span class="n">e_lon_value</span></em>, <em class="sig-param"><span class="n">e_lat_value</span></em>, <em class="sig-param"><span class="n">num_points</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry.create_great_circular_arc_from_2_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry.create_great_circular_arc_from_2_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the great circular arc (WGS84) from 2 points
+:param s_lon_value: longitude of the starting point
+:param s_lat_value: latitude of the starting point
+:param e_lon_value: longitude of the ending point
+:param e_lat_value: latitude of the ending point
+:param num_points: number of vertices for the output linestring (default is 20)
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.helper.Geometry.Geometry.create_great_circular_arc_from_point_azimuth_distance">
+<em class="property">static </em><code class="sig-name descname">create_great_circular_arc_from_point_azimuth_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s_lon_value</span></em>, <em class="sig-param"><span class="n">s_lat_value</span></em>, <em class="sig-param"><span class="n">azimuth</span></em>, <em class="sig-param"><span class="n">distance_value</span></em>, <em class="sig-param"><span class="n">num_points</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry.create_great_circular_arc_from_point_azimuth_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry.create_great_circular_arc_from_point_azimuth_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the great circular arc (WGS84) from the starting point, the azimuthal direction (in degrees)
+and the final distance
+:param s_lon_value: longitude of the starting point
+:param s_lat_value: latitude of the starting point
+:param azimuth: direction of the path in degrees
+(0 is toward north, 90 is toward east, 180 is toward south, 270 is toward west)
+:param distance_value: maximum distance to reach
+:param num_points: number of vertices for the output linestring (default is 20)
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.helper.Geometry.Geometry.explodeToArray">
+<em class="property">static </em><code class="sig-name descname">explodeToArray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">geometry</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry.explodeToArray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry.explodeToArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explode a geometry or a multi geometry to an array of single geometries
+:param geometry: geometry to explode
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.helper.Geometry.Geometry.get_distance">
+<em class="property">static </em><code class="sig-name descname">get_distance</code><span class="sig-paren">(</span><em class="sig-param">projection</em>, <em class="sig-param">lon_value</em>, <em class="sig-param">lat_value</em>, <em class="sig-param">unit=&lt;Distance.METERS: 0&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry.get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry.get_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the distance of a given point from the origin of the given projection
+:param projection: custom aeqd projection
+:param lon_value: longitude value of the point
+:param lat_value: latitude value of the point
+:param unit: unit of measure for the distance
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.helper.Geometry.Geometry.get_progressive_distances">
+<em class="property">static </em><code class="sig-name descname">get_progressive_distances</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distance</span></em>, <em class="sig-param"><span class="n">intervals</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry.get_progressive_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry.get_progressive_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of distances in progression from a minimum step (distance/intervals) to the provided max distance
+:param distance: maximum distance (in meters)
+:param intervals: number of the intervals (default 10)
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.helper.Geometry.Geometry.get_segments_count">
+<em class="property">static </em><code class="sig-name descname">get_segments_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_vertices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Geometry.html#Geometry.get_segments_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Geometry.Geometry.get_segments_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of segments from the total number of required vertices.
+Even it performs a check about the minumum number of segments (0)
+:param num_vertices:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyidwm.helper.Projection">
+<span id="pyidwm-helper-projection-module"></span><h2>pyidwm.helper.Projection module<a class="headerlink" href="#module-pyidwm.helper.Projection" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyidwm.helper.Projection.Projection">
+<em class="property">class </em><code class="sig-prename descclassname">pyidwm.helper.Projection.</code><code class="sig-name descname">Projection</code><a class="reference internal" href="../_modules/pyidwm/helper/Projection.html#Projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Projection.Projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="pyidwm.helper.Projection.Projection.get_aeqd_proj">
+<em class="property">static </em><code class="sig-name descname">get_aeqd_proj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lon</span></em>, <em class="sig-param"><span class="n">lat</span></em>, <em class="sig-param"><span class="n">angle_mode</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Projection.html#Projection.get_aeqd_proj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Projection.Projection.get_aeqd_proj" title="Permalink to this definition">¶</a></dt>
+<dd><p>What we will need for real great circles in a GIS is something that preserves distances and angles.
+We use an azimuthal equidistant projection which needs to be defined for a custom starting point.
+:param lon: longitude of the starting point
+:param lat: latitude of the starting point
+:param angle_mode: units of the angles (degrees/radians)
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.helper.Projection.Projection.get_aeqd_wkt_proj">
+<em class="property">static </em><code class="sig-name descname">get_aeqd_wkt_proj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lon</span></em>, <em class="sig-param"><span class="n">lat</span></em>, <em class="sig-param"><span class="n">angle_mode</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/helper/Projection.html#Projection.get_aeqd_wkt_proj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.helper.Projection.Projection.get_aeqd_wkt_proj" title="Permalink to this definition">¶</a></dt>
+<dd><p>What we will need for real great circles in a GIS is something that preserves distances and angles.
+We use an azimuthal equidistant projection which needs to be defined for a custom starting point.
+:param lon: longitude of the starting point
+:param lat: latitude of the starting point
+:param angle_mode: units of the angles (degrees/radians)
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyidwm.helper.Store">
+<span id="pyidwm-helper-store-module"></span><h2>pyidwm.helper.Store module<a class="headerlink" href="#module-pyidwm.helper.Store" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyidwm.helper">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyidwm.helper" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyidwm.helper package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyidwm.helper.Geometry">pyidwm.helper.Geometry module</a></li>
+<li><a class="reference internal" href="#module-pyidwm.helper.Projection">pyidwm.helper.Projection module</a></li>
+<li><a class="reference internal" href="#module-pyidwm.helper.Store">pyidwm.helper.Store module</a></li>
+<li><a class="reference internal" href="#module-pyidwm.helper">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyidwm.html"
+                        title="previous chapter">pyidwm package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/pyidwm.helper.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyidwm.html" title="pyidwm package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyIDWM unknown documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >pyidwm</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pyidwm.html" >pyidwm package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyidwm.helper package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, GeoSolutions.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

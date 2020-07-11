@@ -4,3 +4,6 @@
 coverage==4.5.1
 pyproj==2.5.0
 GDAL==3.0.4
+pip~=20.0.2
+setuptools~=45.2.0
+Sphinx~=3.1.2

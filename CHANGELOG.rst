@@ -5,6 +5,8 @@ Changelog
 Version 1.0.0
 =============
 
-- Strcuture of the library
+- Structure of the library
 - added GEOALC method to the Api
 - added GEOPLC method to the Api
+- added Unit Tests
+- added Coverage of the Unit Tests
