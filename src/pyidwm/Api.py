@@ -14,7 +14,6 @@ class Api:
     """
     Class facade to access in friendly way to the IDWM functionalities
     """
-
     def __init__(self):
         self.__config = Config()
         self.__store = Store()
@@ -37,19 +36,6 @@ class Api:
             name = feature.GetField(self.__config.layers["country"]["field_name"])
             break
         return name
-
-    def toArraySingle(self, geometry):
-        array = []
-        geom_count = geometry.GetGeometryCount()
-        if geom_count == 0:
-            #if geometry.GetGeometryType() == ogr.wkbLineString:
-            array.append(geometry)
-        else:
-            for i in range(geom_count):
-                part = geometry.GetGeometryRef(i)
-                #if part.GetGeometryType() == ogr.wkbLineString:
-                array.append(part)
-        return array
 
     def geoalc(self, lon_value, lat_value, max_dist_value, azimuth, iwc=0, max_cros=100, arc_approximation=20):
         """
@@ -86,7 +72,7 @@ class Api:
             geom = feature.GetGeometryRef()
             intersection = line.Intersection(geom)
 
-            lines = self.toArraySingle(intersection)
+            lines = Geometry.explodeToArray(intersection)
             for i in range(len(lines)):
                 first_point = lines[i].GetPoint(0)
                 last_point = lines[i].GetPoint(lines[i].GetPointCount() - 1)
@@ -104,7 +90,7 @@ class Api:
                     break
             line = line.Difference(geom)
 
-        lines = self.toArraySingle(line)
+        lines = Geometry.explodeToArray(line)
         for i in range(len(lines)):
             first_point = lines[i].GetPoint(0)
             last_point = lines[i].GetPoint(lines[i].GetPointCount()-1)

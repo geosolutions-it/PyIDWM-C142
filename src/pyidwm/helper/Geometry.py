@@ -156,3 +156,20 @@ class Geometry:
         x, y = projection(lon, lat)
         distance = Distance.CONVERT(math.sqrt(x*x + y*y), Distance.METERS, unit)
         return DistanceValue(distance, unit)
+
+    @staticmethod
+    def explodeToArray(geometry):
+        """
+        Explode a geometry or a multi geometry to an array of single geometries
+        :param geometry: geometry to explode
+        :return:
+        """
+        array = []
+        geom_count = geometry.GetGeometryCount()
+        if geom_count == 0:
+            array.append(geometry)
+        else:
+            for i in range(geom_count):
+                part = geometry.GetGeometryRef(i)
+                array.append(part)
+        return array

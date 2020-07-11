@@ -52,3 +52,52 @@ class ValueTest(TestCase):
         value = AngleValue(12.3, Angle.DEGREES)
         self.assertEqual(value.getValue(), 12.3)
         self.assertEqual(value.getUnit(), Angle.DEGREES)
+
+    def test_add_2_distance_value_with_same_units(self):
+        value1 = DistanceValue(5.0, Distance.METERS)
+        value2 = DistanceValue(8.0, Distance.METERS)
+        value = value1 + value2
+        self.assertEqual(value.getValue(), 13.0)
+        self.assertEqual(value.getUnit(), Distance.METERS)
+
+    def test_add_2_distance_value_with_different_units_01(self):
+        value1 = DistanceValue(5.0, Distance.METERS)
+        value2 = DistanceValue(0.3, Distance.KILOMETERS)
+        value = value1 + value2
+        self.assertEqual(value.getValue(), 305.0)
+        self.assertEqual(value.getUnit(), Distance.METERS)
+
+    def test_add_2_distance_value_with_different_units_02(self):
+        value1 = DistanceValue(0.3, Distance.KILOMETERS)
+        value2 = DistanceValue(5.0, Distance.METERS)
+        value = value1 + value2
+        self.assertEqual(value.getValue(), 0.305)
+        self.assertEqual(value.getUnit(), Distance.KILOMETERS)
+
+    def test_sub_2_distance_value_with_same_units_01(self):
+        value1 = DistanceValue(8.0, Distance.METERS)
+        value2 = DistanceValue(3.0, Distance.METERS)
+        value = value1 - value2
+        self.assertEqual(value.getValue(), 5.0)
+        self.assertEqual(value.getUnit(), Distance.METERS)
+
+    def test_sub_2_distance_value_with_same_units_02(self):
+        value1 = DistanceValue(3.0, Distance.METERS)
+        value2 = DistanceValue(8.0, Distance.METERS)
+        value = value1 - value2
+        self.assertEqual(value.getValue(), -5.0)
+        self.assertEqual(value.getUnit(), Distance.METERS)
+
+    def test_sub_2_distance_value_with_different_units_01(self):
+        value1 = DistanceValue(1.0, Distance.KILOMETERS)
+        value2 = DistanceValue(300.0, Distance.METERS)
+        value = value1 - value2
+        self.assertEqual(value.getValue(), 0.7)
+        self.assertEqual(value.getUnit(), Distance.KILOMETERS)
+
+    def test_sub_2_distance_value_with_different_units_02(self):
+        value1 = DistanceValue(300.0, Distance.METERS)
+        value2 = DistanceValue(1.0, Distance.KILOMETERS)
+        value = value1 - value2
+        self.assertEqual(value.getValue(), -700.0)
+        self.assertEqual(value.getUnit(), Distance.METERS)

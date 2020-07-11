@@ -149,7 +149,7 @@ class ApiTest(TestCase):
         self.assertAlmostEqual(result[1]["point"][1].getValue(), 40.86040, 4)
 
     def test_geoalc_sea_sardinia_italy_official(self):
-        result = self.geoalc(7.0, 39.0, DistanceValue(700, Distance.KILOMETERS), 45.0, Angle.DEGREES, 1, 100, 100)
+        result = self.geoalc(7.0, 39.0, DistanceValue(700, Distance.KILOMETERS), 45.0, Angle.DEGREES, 1, 100, 1000)
         self.assertEqual(len(result), 4)
         self.assertIsNone(result[0]["name"])
         self.assertAlmostEqual(result[0]["total_distance"].getValue(), 177.755, 2)
