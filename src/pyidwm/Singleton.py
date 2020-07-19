@@ -2,7 +2,9 @@
 
 
 class Singleton:
-
+    """
+    Singleton class to decorate classes for the Singleton pattern
+    """
     @staticmethod
     def decorator(clazz):
         """

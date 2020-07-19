@@ -104,8 +104,7 @@ class Geometry:
         return Geometry.create_great_circular_arc(aeqd_projection, x2, y2, num_points)
 
     @staticmethod
-    def create_great_circular_arc_from_point_azimuth_distance(
-            s_lon_value, s_lat_value, azimuth, distance_value, num_points=20):
+    def create_great_circular_arc_from_point_azimuth_distance(s_lon_value, s_lat_value, azimuth, distance_value, num_points=20):
         """
         Create the great circular arc (WGS84) from the starting point, the azimuthal direction (in degrees)
         and the final distance
