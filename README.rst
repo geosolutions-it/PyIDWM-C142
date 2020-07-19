@@ -10,7 +10,7 @@ GeoSpatial (prototype) library to access vector datastore (from IDWM geopackage 
 Description
 ===========
 
-A longer description of your project goes here...
+GeoSpatial (prototype) library to access vector datastore (from IDWM geopackage data)
 
 
 
