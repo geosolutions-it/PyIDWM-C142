@@ -52,7 +52,10 @@ class Distance(Enum):
     Enum for distance units
     """
     METERS = 0
+    """ Distance in meters """
+
     KILOMETERS = 1
+    """ Distance in kilometers """
 
     @staticmethod
     def CONVERT(distance, from_unit=KILOMETERS, to_unit=METERS):
@@ -91,7 +94,10 @@ class SpatialOperator(Enum):
     Enumerator for supported spatial operators
     """
     INTERSECTS = 0
+    """ intersection operator """
+
     WITHIN = 1
+    """ within operator """
 
     @staticmethod
     def FROM_STRING(value):

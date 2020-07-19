@@ -7,8 +7,11 @@ REM Command file for Sphinx documentation
 if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
 )
+
+REM set SPHINXBUILD="C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\Scripts\sphinx-build.exe"
+
 set SOURCEDIR=docs
-set BUILDDIR=docs/html
+set BUILDDIR=docs/build
 
 if "%1" == "" goto help
 

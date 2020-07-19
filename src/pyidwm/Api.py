@@ -9,7 +9,7 @@ from .Value import AngleValue, DistanceValue
 from .Singleton import Singleton
 
 
-@Singleton
+@Singleton.decorator
 class Api:
     """
     Class facade to access in friendly way to the IDWM functionalities

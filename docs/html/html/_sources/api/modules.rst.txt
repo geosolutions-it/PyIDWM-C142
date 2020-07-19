@@ -1,7 +1,0 @@
-pyidwm
-======
-
-.. toctree::
-   :maxdepth: 4
-
-   pyidwm

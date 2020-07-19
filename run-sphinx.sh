@@ -1,0 +1,16 @@
+SOURCEDIR=docs
+BUILDDIR=docs/build
+SPHINXBUILD=sphinx-build
+
+if [ -z "$1" ]
+then
+   $SPHINXBUILD -M help $SOURCEDIR $BUILDDIR $SPHINXOPTS $O
+else
+   $SPHINXBUILD -M $1 $SOURCEDIR $BUILDDIR $SPHINXOPTS $O
+fi
+
+
+
+
+
+

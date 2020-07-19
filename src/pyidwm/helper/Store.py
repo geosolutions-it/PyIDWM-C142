@@ -5,7 +5,7 @@ from ..Config import Config
 from ..Units import Angle, Distance, SpatialOperator
 
 
-@Singleton
+@Singleton.decorator
 class Store:
 
     def __init__(self):

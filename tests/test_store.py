@@ -29,3 +29,4 @@ class StoreTest(TestCase):
         config.geopackage = __file__ + "/../data/idwm.gpkg"
         layer = store.get_layer("RRCountriesPoly")
         self.assertIsNotNone(layer)
+        self.assertIsInstance(layer, ogr.Layer)

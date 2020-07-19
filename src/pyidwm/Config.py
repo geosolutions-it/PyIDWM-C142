@@ -4,7 +4,7 @@ from .Singleton import Singleton
 from .Units import Angle, Distance
 
 
-@Singleton
+@Singleton.decorator
 class Config(object):
     """
     This class manage the base configuration for the IDWM library and it implements the singleton pattern

@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pyidwm.helper.Geometry &#8212; PyIDWM unknown documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyIDWM unknown documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyidwm.helper.Geometry</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyidwm.helper.Geometry</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#https://arthur-e.github.io/Wicket/sandbox-gmaps3.html</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">pyproj</span>
+<span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">ogr</span>
+<span class="kn">from</span> <span class="nn">pyproj</span> <span class="kn">import</span> <span class="n">Proj</span>
+<span class="kn">from</span> <span class="nn">..Singleton</span> <span class="kn">import</span> <span class="n">Singleton</span>
+<span class="kn">from</span> <span class="nn">..Config</span> <span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">..Units</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Distance</span><span class="p">,</span> <span class="n">SpatialOperator</span>
+<span class="kn">from</span> <span class="nn">..Value</span> <span class="kn">import</span> <span class="n">AngleValue</span><span class="p">,</span> <span class="n">DistanceValue</span>
+<span class="kn">from</span> <span class="nn">.Projection</span> <span class="kn">import</span> <span class="n">Projection</span><span class="p">,</span> <span class="n">WGS84_PROJECTION</span>
+
+
+<div class="viewcode-block" id="Geometry"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry">[docs]</a><span class="k">class</span> <span class="nc">Geometry</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Geometry.get_segments_count"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry.get_segments_count">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_segments_count</span><span class="p">(</span><span class="n">num_vertices</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of segments from the total number of required vertices.</span>
+<span class="sd">        Even it performs a check about the minumum number of segments (0)</span>
+<span class="sd">        :param num_vertices:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_segments</span> <span class="o">=</span> <span class="n">num_vertices</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">num_segments</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">num_segments</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">num_segments</span></div>
+
+<div class="viewcode-block" id="Geometry.create_buffer"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry.create_buffer">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_buffer</span><span class="p">(</span><span class="n">lonValue</span><span class="p">,</span> <span class="n">latValue</span><span class="p">,</span> <span class="n">radiusValue</span><span class="p">,</span> <span class="n">num_vertices</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a circle (approximate by a polygon) from center and radius in WGS84</span>
+<span class="sd">        :param lonValue: {CoordinateValue} longitude of the center of the circle</span>
+<span class="sd">        :param latValue: {CoordinateValue} latitude of the center of the circle</span>
+<span class="sd">        :param radius: {DistanceValue} radius of the circle</span>
+<span class="sd">        :param num_vertices: number of vertices to approximate the circle with a polygon</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">Distance</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">radiusValue</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">radiusValue</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Distance</span><span class="o">.</span><span class="n">METERS</span><span class="p">)</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">lonValue</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">lonValue</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">latValue</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">latValue</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">aeqd_projection</span> <span class="o">=</span> <span class="n">Projection</span><span class="o">.</span><span class="n">get_aeqd_proj</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span><span class="n">ogr</span><span class="o">.</span><span class="n">wkbLinearRing</span><span class="p">)</span>
+        <span class="n">step_radians</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">num_vertices</span>
+        <span class="n">array_x</span><span class="p">,</span> <span class="n">array_y</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_vertices</span><span class="p">):</span>
+            <span class="n">angle_radians</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">step_radians</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_radians</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_radians</span><span class="p">)</span>
+            <span class="n">array_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">array_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">aeqd_projection</span><span class="p">,</span> <span class="n">WGS84_PROJECTION</span><span class="p">,</span> <span class="n">array_x</span><span class="p">[:],</span> <span class="n">array_y</span><span class="p">[:])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="n">new_lat</span><span class="p">,</span> <span class="n">new_lon</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">AddPoint</span><span class="p">(</span><span class="n">new_lon</span><span class="p">,</span> <span class="n">new_lat</span><span class="p">)</span>
+        <span class="n">new_lat</span><span class="p">,</span> <span class="n">new_lon</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">AddPoint</span><span class="p">(</span><span class="n">new_lon</span><span class="p">,</span> <span class="n">new_lat</span><span class="p">)</span>
+        <span class="n">polygon</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span><span class="n">ogr</span><span class="o">.</span><span class="n">wkbPolygon</span><span class="p">)</span>
+        <span class="n">polygon</span><span class="o">.</span><span class="n">AddGeometry</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">polygon</span></div>
+
+<div class="viewcode-block" id="Geometry.create_great_circular_arc"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry.create_great_circular_arc">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_great_circular_arc</span><span class="p">(</span><span class="n">projection</span><span class="p">,</span> <span class="n">e_x</span><span class="p">,</span> <span class="n">e_y</span><span class="p">,</span> <span class="n">num_points</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the great circular arc (WGS84) using the provided aeqd projection (from the starting point) and the ending point</span>
+<span class="sd">        :param projection: aeqd projection starting from the first point (lon,lat) =&gt; (0,0)</span>
+<span class="sd">        :param e_x: x coordinate of the final point in the aeqd projection</span>
+<span class="sd">        :param e_y: y coordinate of the final point in the aeqd projection</span>
+<span class="sd">        :param num_points: number of vertices for the output linestring (default is 20)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">segments_count</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">get_segments_count</span><span class="p">(</span><span class="n">num_points</span><span class="p">)</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">e_x</span> <span class="o">/</span> <span class="n">segments_count</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">e_y</span> <span class="o">/</span> <span class="n">segments_count</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span><span class="n">ogr</span><span class="o">.</span><span class="n">wkbLineString</span><span class="p">)</span>
+        <span class="n">array_x</span><span class="p">,</span> <span class="n">array_y</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">segments_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">dx</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">dy</span>
+            <span class="n">array_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">array_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">pyproj</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">projection</span><span class="p">,</span> <span class="n">WGS84_PROJECTION</span><span class="p">,</span> <span class="n">array_x</span><span class="p">[:],</span> <span class="n">array_y</span><span class="p">[:])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="n">new_lat</span><span class="p">,</span> <span class="n">new_lon</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">AddPoint</span><span class="p">(</span><span class="n">new_lon</span><span class="p">,</span> <span class="n">new_lat</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">line</span></div>
+
+<div class="viewcode-block" id="Geometry.create_great_circular_arc_from_2_points"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry.create_great_circular_arc_from_2_points">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_great_circular_arc_from_2_points</span><span class="p">(</span><span class="n">s_lon_value</span><span class="p">,</span> <span class="n">s_lat_value</span><span class="p">,</span> <span class="n">e_lon_value</span><span class="p">,</span> <span class="n">e_lat_value</span><span class="p">,</span> <span class="n">num_points</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the great circular arc (WGS84) from 2 points</span>
+<span class="sd">        :param s_lon_value: longitude of the starting point</span>
+<span class="sd">        :param s_lat_value: latitude of the starting point</span>
+<span class="sd">        :param e_lon_value: longitude of the ending point</span>
+<span class="sd">        :param e_lat_value: latitude of the ending point</span>
+<span class="sd">        :param num_points: number of vertices for the output linestring (default is 20)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s_lon</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">s_lon_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">s_lon_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">s_lat</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">s_lat_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">s_lat_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">e_lon</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">e_lon_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">e_lon_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">e_lat</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">e_lat_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">e_lat_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">aeqd_projection</span> <span class="o">=</span> <span class="n">Projection</span><span class="o">.</span><span class="n">get_aeqd_proj</span><span class="p">(</span><span class="n">s_lon</span><span class="p">,</span> <span class="n">s_lat</span><span class="p">,</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">aeqd_projection</span><span class="p">(</span><span class="n">e_lon</span><span class="p">,</span> <span class="n">e_lat</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">create_great_circular_arc</span><span class="p">(</span><span class="n">aeqd_projection</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Geometry.create_great_circular_arc_from_point_azimuth_distance"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry.create_great_circular_arc_from_point_azimuth_distance">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_great_circular_arc_from_point_azimuth_distance</span><span class="p">(</span>
+            <span class="n">s_lon_value</span><span class="p">,</span> <span class="n">s_lat_value</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">distance_value</span><span class="p">,</span> <span class="n">num_points</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the great circular arc (WGS84) from the starting point, the azimuthal direction (in degrees)</span>
+<span class="sd">        and the final distance</span>
+<span class="sd">        :param s_lon_value: longitude of the starting point</span>
+<span class="sd">        :param s_lat_value: latitude of the starting point</span>
+<span class="sd">        :param azimuth: direction of the path in degrees</span>
+<span class="sd">        (0 is toward north, 90 is toward east, 180 is toward south, 270 is toward west)</span>
+<span class="sd">        :param distance_value: maximum distance to reach</span>
+<span class="sd">        :param num_points: number of vertices for the output linestring (default is 20)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s_lon</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">s_lon_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">s_lon_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">s_lat</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">s_lat_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">s_lat_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">aeqd_projection</span> <span class="o">=</span> <span class="n">Projection</span><span class="o">.</span><span class="n">get_aeqd_proj</span><span class="p">(</span><span class="n">s_lon</span><span class="p">,</span> <span class="n">s_lat</span><span class="p">,</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">radians</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">,</span> <span class="n">Angle</span><span class="o">.</span><span class="n">RADIANS</span><span class="p">)</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">Distance</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">distance_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">distance_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Distance</span><span class="o">.</span><span class="n">METERS</span><span class="p">)</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">create_great_circular_arc</span><span class="p">(</span><span class="n">aeqd_projection</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Geometry.get_progressive_distances"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry.get_progressive_distances">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_progressive_distances</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">intervals</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return a list of distances in progression from a minimum step (distance/intervals) to the provided max distance</span>
+<span class="sd">        :param distance: maximum distance (in meters)</span>
+<span class="sd">        :param intervals: number of the intervals (default 10)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">/</span> <span class="n">intervals</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">intervals</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span>
+        <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">distances</span></div>
+
+<div class="viewcode-block" id="Geometry.get_distance"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry.get_distance">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="n">projection</span><span class="p">,</span> <span class="n">lon_value</span><span class="p">,</span> <span class="n">lat_value</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">Distance</span><span class="o">.</span><span class="n">METERS</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the distance of a given point from the origin of the given projection</span>
+<span class="sd">        :param projection: custom aeqd projection</span>
+<span class="sd">        :param lon_value: longitude value of the point</span>
+<span class="sd">        :param lat_value: latitude value of the point</span>
+<span class="sd">        :param unit: unit of measure for the distance</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">lon_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">lon_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">lat_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">lat_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">projection</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">Distance</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">y</span><span class="p">),</span> <span class="n">Distance</span><span class="o">.</span><span class="n">METERS</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DistanceValue</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Geometry.explodeToArray"><a class="viewcode-back" href="../../../api/pyidwm.helper.html#pyidwm.helper.Geometry.Geometry.explodeToArray">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">explodeToArray</span><span class="p">(</span><span class="n">geometry</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Explode a geometry or a multi geometry to an array of single geometries</span>
+<span class="sd">        :param geometry: geometry to explode</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">geom_count</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">GetGeometryCount</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">geom_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">geom_count</span><span class="p">):</span>
+                <span class="n">part</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">GetGeometryRef</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">array</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyIDWM unknown documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyidwm.helper.Geometry</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, GeoSolutions.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>
