@@ -46,13 +46,13 @@ class Api:
         :param max_dist_value: maximum distance
         :param azimuth: azimuth (in degrees clockwise from North) (0-359)
         :param iwc: determines how the routine shall return results:
-                    if IWC=1 : The user is only interested of the land/sea path and doesn't need to know if the
-                    land path is over different countries.
-                    In the CTYVEK array a land path will be indicated with the code '+++'.
-                    if IWC=0 : Full information of the path (countries/sea).
+        if IWC=1 : The user is only interested of the land/sea path and doesn't need to know if the
+        land path is over different countries.
+        In the CTYVEK array a land path will be indicated with the code '+++'.
+        if IWC=0 : Full information of the path (countries/sea).
         :param max_cros: MAXCROS influences the dimension of the work space for this subroutine.
-                        It should be greater than the expected number of crossings which will depend on the value
-                        of IRANGE and the complexity of the map. Experience shows that this value may be up to 110
+        It should be greater than the expected number of crossings which will depend on the value
+        of IRANGE and the complexity of the map. Experience shows that this value may be up to 110
         :param arc_approximation: number of vertices to approximate the arc with a linestring geometry (default 20)
         :return:
         """

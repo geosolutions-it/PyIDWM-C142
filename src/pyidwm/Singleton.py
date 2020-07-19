@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
+
+SPHINX_BUILD = bool(os.environ.get('SPHINXBUILD', ''))
 
 
 class Singleton:
-    """
-    Singleton class to decorate classes for the Singleton pattern
-    """
+
     @staticmethod
     def decorator(clazz):
         """
@@ -12,6 +13,9 @@ class Singleton:
         :param clazz: class to make singleton
         :return:
         """
+        if SPHINX_BUILD:
+            return clazz
+
         class ClassWrapper(clazz):
             """
             Class wrapper implementing the singleton pattern

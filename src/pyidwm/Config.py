@@ -104,15 +104,15 @@ class Config(object):
         """
         Read a JSON configuration file, with the following structure:
         {
-            "geopackage": <full path to the geopackage>,
-            "angle_mode": "degrees" or "radians",
-            "distance_mode": "meters" or "kilometers",
-            "layers": {
-                "country": {
-                    "table": <table name containing the polygons of the countries>,
-                    "field_name": <field name containing the country code>
-                }
-            }
+        "geopackage": <full path to the geopackage>,
+        "angle_mode": "degrees" or "radians",
+        "distance_mode": "meters" or "kilometers",
+        "layers": {
+        "country": {
+        "table": <table name containing the polygons of the countries>,
+        "field_name": <field name containing the country code>
+        }
+        }
         }
         :param path: path of the json file
         :return:

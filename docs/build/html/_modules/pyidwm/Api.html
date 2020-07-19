@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pyidwm.Api &#8212; PyIDWM unknown documentation</title>
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PyIDWM unknown documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyidwm.Api</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyidwm.Api</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">ogr</span>
+<span class="kn">from</span> <span class="nn">.Config</span> <span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">.helper.Store</span> <span class="kn">import</span> <span class="n">Store</span>
+<span class="kn">from</span> <span class="nn">.helper.Geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span> <span class="nn">.helper.Projection</span> <span class="kn">import</span> <span class="n">Projection</span>
+<span class="kn">from</span> <span class="nn">.Units</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Distance</span><span class="p">,</span> <span class="n">SpatialOperator</span>
+<span class="kn">from</span> <span class="nn">.Value</span> <span class="kn">import</span> <span class="n">AngleValue</span><span class="p">,</span> <span class="n">DistanceValue</span>
+<span class="kn">from</span> <span class="nn">.Singleton</span> <span class="kn">import</span> <span class="n">Singleton</span>
+
+
+<div class="viewcode-block" id="Api"><a class="viewcode-back" href="../../api/pyidwm.html#pyidwm.Api.Api">[docs]</a><span class="nd">@Singleton</span><span class="o">.</span><span class="n">decorator</span>
+<span class="k">class</span> <span class="nc">Api</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class facade to access in friendly way to the IDWM functionalities</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__store</span> <span class="o">=</span> <span class="n">Store</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Api.geoplc"><a class="viewcode-back" href="../../api/pyidwm.html#pyidwm.Api.Api.geoplc">[docs]</a>    <span class="k">def</span> <span class="nf">geoplc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lon_value</span><span class="p">,</span> <span class="n">lat_value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the county code for a given point or None if it is on the sea</span>
+<span class="sd">        :param lon_value: longitude value of the given point</span>
+<span class="sd">        :param lat_value: latitude value of the given point</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">lon_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">lon_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">Angle</span><span class="o">.</span><span class="n">CONVERT</span><span class="p">(</span><span class="n">lat_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">lat_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(),</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__store</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">][</span><span class="s2">&quot;table&quot;</span><span class="p">])</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span><span class="n">ogr</span><span class="o">.</span><span class="n">wkbPoint</span><span class="p">)</span>
+        <span class="n">point</span><span class="o">.</span><span class="n">AddPoint</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+        <span class="n">layer</span><span class="o">.</span><span class="n">SetSpatialFilter</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">layer</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">GetField</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">][</span><span class="s2">&quot;field_name&quot;</span><span class="p">])</span>
+            <span class="k">break</span>
+        <span class="k">return</span> <span class="n">name</span></div>
+
+<div class="viewcode-block" id="Api.geoalc"><a class="viewcode-back" href="../../api/pyidwm.html#pyidwm.Api.Api.geoalc">[docs]</a>    <span class="k">def</span> <span class="nf">geoalc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lon_value</span><span class="p">,</span> <span class="n">lat_value</span><span class="p">,</span> <span class="n">max_dist_value</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">iwc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_cros</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arc_approximation</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        calculate the path (geographical map) from a given point on a given azimuth through each country or water</span>
+<span class="sd">        within a specified distance.</span>
+<span class="sd">        :param lon_value: longitude value of the starting point</span>
+<span class="sd">        :param lat_value: latitude value of the starting point</span>
+<span class="sd">        :param max_dist_value: maximum distance</span>
+<span class="sd">        :param azimuth: azimuth (in degrees clockwise from North) (0-359)</span>
+<span class="sd">        :param iwc: determines how the routine shall return results:</span>
+<span class="sd">        if IWC=1 : The user is only interested of the land/sea path and doesn&#39;t need to know if the</span>
+<span class="sd">        land path is over different countries.</span>
+<span class="sd">        In the CTYVEK array a land path will be indicated with the code &#39;+++&#39;.</span>
+<span class="sd">        if IWC=0 : Full information of the path (countries/sea).</span>
+<span class="sd">        :param max_cros: MAXCROS influences the dimension of the work space for this subroutine.</span>
+<span class="sd">        It should be greater than the expected number of crossings which will depend on the value</span>
+<span class="sd">        of IRANGE and the complexity of the map. Experience shows that this value may be up to 110</span>
+<span class="sd">        :param arc_approximation: number of vertices to approximate the arc with a linestring geometry (default 20)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dist_unit</span> <span class="o">=</span> <span class="n">max_dist_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">()</span>
+        <span class="n">aeqd</span> <span class="o">=</span> <span class="n">Projection</span><span class="o">.</span><span class="n">get_aeqd_proj</span><span class="p">(</span><span class="n">lon_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">lat_value</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">lon_value</span><span class="o">.</span><span class="n">getUnit</span><span class="p">())</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">create_great_circular_arc_from_point_azimuth_distance</span><span class="p">(</span>
+            <span class="n">lon_value</span><span class="p">,</span> <span class="n">lat_value</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">max_dist_value</span><span class="p">,</span> <span class="n">arc_approximation</span><span class="p">)</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__store</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">][</span><span class="s2">&quot;table&quot;</span><span class="p">])</span>
+        <span class="n">field_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">][</span><span class="s2">&quot;field_name&quot;</span><span class="p">]</span>
+        <span class="n">layer</span><span class="o">.</span><span class="n">SetSpatialFilter</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">cont</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">layer</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;+++&quot;</span>
+            <span class="k">if</span> <span class="n">iwc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">GetField</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">GetGeometryRef</span><span class="p">()</span>
+            <span class="n">intersection</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">Intersection</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">explodeToArray</span><span class="p">(</span><span class="n">intersection</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
+                <span class="n">first_point</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">GetPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">last_point</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">GetPoint</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">GetPointCount</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">f_lon_value</span> <span class="o">=</span> <span class="n">AngleValue</span><span class="p">(</span><span class="n">first_point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+                <span class="n">f_lat_value</span> <span class="o">=</span> <span class="n">AngleValue</span><span class="p">(</span><span class="n">first_point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+                <span class="n">l_lon_value</span> <span class="o">=</span> <span class="n">AngleValue</span><span class="p">(</span><span class="n">last_point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+                <span class="n">l_lat_value</span> <span class="o">=</span> <span class="n">AngleValue</span><span class="p">(</span><span class="n">last_point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+                <span class="n">distance_f</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="n">aeqd</span><span class="p">,</span> <span class="n">f_lon_value</span><span class="p">,</span> <span class="n">f_lat_value</span><span class="p">,</span> <span class="n">dist_unit</span><span class="p">)</span>
+                <span class="n">distance_l</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="n">aeqd</span><span class="p">,</span> <span class="n">l_lon_value</span><span class="p">,</span> <span class="n">l_lat_value</span><span class="p">,</span> <span class="n">dist_unit</span><span class="p">)</span>
+                <span class="n">distance_p</span> <span class="o">=</span> <span class="n">distance_l</span> <span class="o">-</span> <span class="n">distance_f</span>
+                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;point&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">l_lon_value</span><span class="p">,</span> <span class="n">l_lat_value</span><span class="p">],</span>
+                              <span class="s2">&quot;total_distance&quot;</span><span class="p">:</span> <span class="n">distance_l</span><span class="p">,</span> <span class="s2">&quot;partial_distance&quot;</span><span class="p">:</span> <span class="n">distance_p</span><span class="p">})</span>
+                <span class="n">cont</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">cont</span> <span class="o">==</span> <span class="n">max_cros</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">Difference</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">explodeToArray</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
+            <span class="n">first_point</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">GetPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">last_point</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">GetPoint</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">GetPointCount</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">f_lon_value</span> <span class="o">=</span> <span class="n">AngleValue</span><span class="p">(</span><span class="n">first_point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+            <span class="n">f_lat_value</span> <span class="o">=</span> <span class="n">AngleValue</span><span class="p">(</span><span class="n">first_point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+            <span class="n">l_lon_value</span> <span class="o">=</span> <span class="n">AngleValue</span><span class="p">(</span><span class="n">last_point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+            <span class="n">l_lat_value</span> <span class="o">=</span> <span class="n">AngleValue</span><span class="p">(</span><span class="n">last_point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Angle</span><span class="o">.</span><span class="n">DEGREES</span><span class="p">)</span>
+            <span class="n">distance_f</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="n">aeqd</span><span class="p">,</span> <span class="n">f_lon_value</span><span class="p">,</span> <span class="n">f_lat_value</span><span class="p">,</span> <span class="n">dist_unit</span><span class="p">)</span>
+            <span class="n">distance_l</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="n">aeqd</span><span class="p">,</span> <span class="n">l_lon_value</span><span class="p">,</span> <span class="n">l_lat_value</span><span class="p">,</span> <span class="n">dist_unit</span><span class="p">)</span>
+            <span class="n">distance_p</span> <span class="o">=</span> <span class="n">distance_l</span> <span class="o">-</span> <span class="n">distance_f</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;point&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">l_lon_value</span><span class="p">,</span> <span class="n">l_lat_value</span><span class="p">],</span>
+                          <span class="s2">&quot;total_distance&quot;</span><span class="p">:</span> <span class="n">distance_l</span><span class="p">,</span> <span class="s2">&quot;partial_distance&quot;</span><span class="p">:</span> <span class="n">distance_p</span><span class="p">})</span>
+
+        <span class="n">parts</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;total_distance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_cros</span><span class="p">]</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PyIDWM unknown documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyidwm.Api</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, GeoSolutions.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

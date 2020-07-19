@@ -55,9 +55,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pyidwm.helper.html">pyidwm.helper package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyidwm.helper.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyidwm.helper.html#pyidwm-helper-geometry-module">pyidwm.helper.Geometry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyidwm.helper.html#module-pyidwm.helper.Geometry">pyidwm.helper.Geometry module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyidwm.helper.html#module-pyidwm.helper.Projection">pyidwm.helper.Projection module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyidwm.helper.html#pyidwm-helper-store-module">pyidwm.helper.Store module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyidwm.helper.html#module-pyidwm.helper.Store">pyidwm.helper.Store module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyidwm.helper.html#module-pyidwm.helper">Module contents</a></li>
 </ul>
 </li>
@@ -67,19 +67,116 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pyidwm-api-module">
-<h2>pyidwm.Api module<a class="headerlink" href="#pyidwm-api-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyidwm.Api">
+<span id="pyidwm-api-module"></span><h2>pyidwm.Api module<a class="headerlink" href="#module-pyidwm.Api" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyidwm.Api.Api">
+<em class="property">class </em><code class="sig-prename descclassname">pyidwm.Api.</code><code class="sig-name descname">Api</code><a class="reference internal" href="../_modules/pyidwm/Api.html#Api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Api.Api" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class facade to access in friendly way to the IDWM functionalities</p>
+<dl class="py method">
+<dt id="pyidwm.Api.Api.geoalc">
+<code class="sig-name descname">geoalc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lon_value</span></em>, <em class="sig-param"><span class="n">lat_value</span></em>, <em class="sig-param"><span class="n">max_dist_value</span></em>, <em class="sig-param"><span class="n">azimuth</span></em>, <em class="sig-param"><span class="n">iwc</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_cros</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">arc_approximation</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Api.html#Api.geoalc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Api.Api.geoalc" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the path (geographical map) from a given point on a given azimuth through each country or water
+within a specified distance.
+:param lon_value: longitude value of the starting point
+:param lat_value: latitude value of the starting point
+:param max_dist_value: maximum distance
+:param azimuth: azimuth (in degrees clockwise from North) (0-359)
+:param iwc: determines how the routine shall return results:
+if IWC=1 : The user is only interested of the land/sea path and doesn’t need to know if the
+land path is over different countries.
+In the CTYVEK array a land path will be indicated with the code ‘+++’.
+if IWC=0 : Full information of the path (countries/sea).
+:param max_cros: MAXCROS influences the dimension of the work space for this subroutine.
+It should be greater than the expected number of crossings which will depend on the value
+of IRANGE and the complexity of the map. Experience shows that this value may be up to 110
+:param arc_approximation: number of vertices to approximate the arc with a linestring geometry (default 20)
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.Api.Api.geoplc">
+<code class="sig-name descname">geoplc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lon_value</span></em>, <em class="sig-param"><span class="n">lat_value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Api.html#Api.geoplc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Api.Api.geoplc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the county code for a given point or None if it is on the sea
+:param lon_value: longitude value of the given point
+:param lat_value: latitude value of the given point
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyidwm.Config">
 <span id="pyidwm-config-module"></span><h2>pyidwm.Config module<a class="headerlink" href="#module-pyidwm.Config" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pyidwm.Config.Config">
+<em class="property">class </em><code class="sig-prename descclassname">pyidwm.Config.</code><code class="sig-name descname">Config</code><a class="reference internal" href="../_modules/pyidwm/Config.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Config.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class manage the base configuration for the IDWM library and it implements the singleton pattern</p>
+<dl class="py method">
+<dt id="pyidwm.Config.Config.FROM_FILE">
+<em class="property">static </em><code class="sig-name descname">FROM_FILE</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Config.html#Config.FROM_FILE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Config.Config.FROM_FILE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a JSON configuration file, with the following structure:
+{
+“geopackage”: &lt;full path to the geopackage&gt;,
+“angle_mode”: “degrees” or “radians”,
+“distance_mode”: “meters” or “kilometers”,
+“layers”: {
+“country”: {
+“table”: &lt;table name containing the polygons of the countries&gt;,
+“field_name”: &lt;field name containing the country code&gt;
+}
+}
+}
+:param path: path of the json file
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.Config.Config.angle_mode">
+<em class="property">property </em><code class="sig-name descname">angle_mode</code><a class="headerlink" href="#pyidwm.Config.Config.angle_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the angle mode for the library
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.Config.Config.distance_mode">
+<em class="property">property </em><code class="sig-name descname">distance_mode</code><a class="headerlink" href="#pyidwm.Config.Config.distance_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the distance mode for the library
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.Config.Config.geopackage">
+<em class="property">property </em><code class="sig-name descname">geopackage</code><a class="headerlink" href="#pyidwm.Config.Config.geopackage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to the IDWM geopackage
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.Config.Config.layers">
+<em class="property">property </em><code class="sig-name descname">layers</code><a class="headerlink" href="#pyidwm.Config.Config.layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dictionary with information of the used layers from the geopackage
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyidwm.Config.Config.reset">
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Config.html#Config.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Config.Config.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reste the configuration parameters to the default values
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyidwm.Singleton">
 <span id="pyidwm-singleton-module"></span><h2>pyidwm.Singleton module<a class="headerlink" href="#module-pyidwm.Singleton" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="pyidwm.Singleton.Singleton">
 <em class="property">class </em><code class="sig-prename descclassname">pyidwm.Singleton.</code><code class="sig-name descname">Singleton</code><a class="reference internal" href="../_modules/pyidwm/Singleton.html#Singleton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Singleton.Singleton" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Singleton class to decorate classes for the Singleton pattern</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="py method">
 <dt id="pyidwm.Singleton.Singleton.decorator">
 <em class="property">static </em><code class="sig-name descname">decorator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clazz</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Singleton.html#Singleton.decorator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Singleton.Singleton.decorator" title="Permalink to this definition">¶</a></dt>
@@ -96,7 +193,7 @@
 <dl class="py class">
 <dt id="pyidwm.Units.Angle">
 <em class="property">class </em><code class="sig-prename descclassname">pyidwm.Units.</code><code class="sig-name descname">Angle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Units.html#Angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Units.Angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.8/library/enum.html#enum.Enum" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
 <p>Enum for angle units</p>
 <dl class="py method">
 <dt id="pyidwm.Units.Angle.CONVERT">
@@ -133,7 +230,7 @@
 <dl class="py class">
 <dt id="pyidwm.Units.Distance">
 <em class="property">class </em><code class="sig-prename descclassname">pyidwm.Units.</code><code class="sig-name descname">Distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Units.html#Distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Units.Distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.8/library/enum.html#enum.Enum" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
 <p>Enum for distance units</p>
 <dl class="py method">
 <dt id="pyidwm.Units.Distance.CONVERT">
@@ -170,7 +267,7 @@
 <dl class="py class">
 <dt id="pyidwm.Units.SpatialOperator">
 <em class="property">class </em><code class="sig-prename descclassname">pyidwm.Units.</code><code class="sig-name descname">SpatialOperator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Units.html#SpatialOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Units.SpatialOperator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.8/library/enum.html#enum.Enum" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
 <p>Enumerator for supported spatial operators</p>
 <dl class="py method">
 <dt id="pyidwm.Units.SpatialOperator.FROM_STRING">
@@ -221,7 +318,7 @@
 <dl class="py class">
 <dt id="pyidwm.Value.Value">
 <em class="property">class </em><code class="sig-prename descclassname">pyidwm.Value.</code><code class="sig-name descname">Value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyidwm/Value.html#Value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyidwm.Value.Value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>It is a Base Class representing a value with his unit of measure</p>
 <dl class="py method">
 <dt id="pyidwm.Value.Value.getUnit">
@@ -257,7 +354,7 @@
 <li><a class="reference internal" href="#">pyidwm package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#pyidwm-api-module">pyidwm.Api module</a></li>
+<li><a class="reference internal" href="#module-pyidwm.Api">pyidwm.Api module</a></li>
 <li><a class="reference internal" href="#module-pyidwm.Config">pyidwm.Config module</a></li>
 <li><a class="reference internal" href="#module-pyidwm.Singleton">pyidwm.Singleton module</a></li>
 <li><a class="reference internal" href="#module-pyidwm.Units">pyidwm.Units module</a></li>
